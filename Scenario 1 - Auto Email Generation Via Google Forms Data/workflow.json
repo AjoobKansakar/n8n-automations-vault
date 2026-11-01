@@ -1,0 +1,221 @@
+{
+  "name": "Scenario 1 | Auto Email Generation Via Google Forms Data",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "Scenario: Send welcome messages to new users\n\nWhen a user submits a form then an automatic email should be send to that user on his registered mail as a WELCOME mail",
+        "height": 112,
+        "width": 672,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        32,
+        -448
+      ],
+      "id": "a749aed6-77bf-457c-857c-12a33481e1e7",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "google-form-email",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "3428a2d3-afd5-4abc-928f-66cf49945b82",
+      "name": "Webhook",
+      "webhookId": "8d8fb2e8-6c7d-437e-befb-7744052fb1c1"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=you are the welcome coordinator for our company, Write a friendly, professional Email for a new user who just signed up using the form:\nUser details:\n- Name: {{ $json.body['First name'] }}\n- Assigned role: {{ $json.body['Your Role'] }}\n\nInstructions to follow:\n1. Do NOT write a subject line. Write ONLY the email body starting directly with \"Dear [Name],\n2. Write a warm 2-3 paragraph welcome email greeting them by name.\n3. Mention their specific role and why we are excited to have them in that position.\n4. Keep the tone encouraging and professional.\n\n",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        224,
+        0
+      ],
+      "id": "a23adf90-2e3e-4ec5-922f-a01f71afaed4",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "modelName": "=models/gemini-3-flash-preview",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        320,
+        160
+      ],
+      "id": "8fa47b9c-0f1a-42ca-a360-3cb02b740da6",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "znAJNT0C4uIRmQs2",
+          "name": "Test 01"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "aj.learns04@gmail.com",
+        "toEmail": "={{ $('Webhook').item.json.body['Your Email Address'] }}",
+        "subject": "=Welcome to the Team,  {{ $('Webhook').item.json.body['First name'] }}",
+        "emailFormat": "text",
+        "text": "={{ $json.text }}\n\nBest Regards, \nTeam KasRrat",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        592,
+        0
+      ],
+      "id": "6fac321e-ea61-4061-9dbf-7a930f21fc4a",
+      "name": "Send an Email",
+      "webhookId": "aff8fbd6-4470-447e-a95b-a8dc148e3a81",
+      "credentials": {
+        "smtp": {
+          "id": "A7oSbidGlLZcj8GU",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "Webhook to connect google forms to email DONE VIA ngrok URL setup to build the connection between the form and n8n "
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -144,
+        144
+      ],
+      "id": "eafe70fd-d302-4771-807c-9ef9fce7ff64",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "AI Component:\n\ngets the users data and generates the mail accordingly to the user info \nand sends the email to the registerd mail submitted on the form",
+        "height": 224,
+        "width": 272
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        224,
+        -256
+      ],
+      "id": "d20eaa8d-fdc0-498d-afb5-5e562dcf128b",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "Connects SMTP account to send emails to the new users ",
+        "height": 80
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        576,
+        160
+      ],
+      "id": "b8f55960-3753-456a-ab50-22d04c1a7e1b",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "All the things that were used:\n\n1. Webhook \n- Connection via google form script + ngrok URL + n8n TEST url + Trigger ( OnFromSubmit )\n\n2. Gemini for Email generation\n\n3. SMTP for Sending Email to Users ",
+        "height": 208,
+        "width": 496,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -320,
+        -272
+      ],
+      "id": "c5404770-2cec-45c8-ba67-3514f4da9abb",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "content": "In order to remove the DEFAULT footer that comes with n8n --> Append n8n Attribute feature/option was disabled --> and in the text field a static footer was added to write in the email",
+        "height": 112,
+        "width": 432
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        576,
+        256
+      ],
+      "id": "ad0e417c-fd7b-476c-8075-25d2ab56b6bd",
+      "name": "Sticky Note5"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Send an Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "21ae1e57-c494-48e5-92d9-b1da7f3bc000",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "5dbd5526ffb8216a76e80c922cc3c9c93ac0af890a0f7379fa7ec8c67799413c"
+  },
+  "nodeGroups": [],
+  "id": "eLbN77BzBTNi3HGf",
+  "tags": []
+}
