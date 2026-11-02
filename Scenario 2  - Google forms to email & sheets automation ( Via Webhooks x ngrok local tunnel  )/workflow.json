@@ -1,0 +1,313 @@
+{
+  "name": "Scenario 2 | google forms to email & sheets automation ( Via Webhooks/ngrok  )",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "Auto-form-to-spreedsheet-update",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -128,
+        448
+      ],
+      "id": "a52e787d-d5ab-4cdb-810e-a7de2b17416e",
+      "name": "Webhook",
+      "webhookId": "27344154-f098-4600-8b4a-ba4b0cc3aa4e"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a professional onboarding coordinator for KasRrat. Write a warm, encouraging, and professional welcome email for a newly registered member.\n\nMember Details:\n- Name: {{ $json.body.Name }}\n- Role: {{ $json.body.Role }}\n\nFormatting Rules:\n1. Do NOT write a subject line.\n2. Start directly with: \"Hello, {{ $json.body.Name }}\" followed by two line breaks.\n3. Do NOT include a closing sign-off (like \"Best regards\" or \"The KasRrat Team\") at the end, as that is attached automatically. Stop immediately after the final paragraph.\n\nContent Instructions:\n- Write a 2 to 3 paragraph welcome message.\n- If a Role is provided: Highlight their specific role, why we are excited to have them in that position, and how their contributions will help our goals.\n- If Role is empty, undefined, or not provided: Focus the welcome message warmly on them joining our platform/community, our culture, and how we are here to support their journey, without mentioning any specific job title.",
+        "messages": {
+          "messageValues": []
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        96,
+        448
+      ],
+      "id": "4ae3f34c-8c16-4b46-9156-ca0462bd9dd5",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        224,
+        640
+      ],
+      "id": "bad4b30d-4b9a-4722-b893-91cbc594f728",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "znAJNT0C4uIRmQs2",
+          "name": "Test 01"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "ajoob.work@gmail.com",
+        "toEmail": "={{ $('Webhook').item.json.body['Your Email'] }}",
+        "subject": "=Welcome to the Team,  {{ $('Webhook').item.json.body.Name }}",
+        "emailFormat": "text",
+        "text": "={{ $json.text }}\n\nBest regards,\nThe KasRrat Team",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        464,
+        448
+      ],
+      "id": "acb8c9c1-d56b-4917-b286-58ae9b552906",
+      "name": "Send an Email",
+      "webhookId": "7784b092-660e-45e3-9cbb-3cf802d9d073",
+      "credentials": {
+        "smtp": {
+          "id": "A7oSbidGlLZcj8GU",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1yP-ViPfE9WOjJ_vsAua4NLQE-eev2MNLLWI24qJ0PZo",
+          "mode": "list",
+          "cachedResultName": "New User Registrations Automated",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yP-ViPfE9WOjJ_vsAua4NLQE-eev2MNLLWI24qJ0PZo/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yP-ViPfE9WOjJ_vsAua4NLQE-eev2MNLLWI24qJ0PZo/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "User Name": "={{ $json.body.Name }}",
+            "Purpose": "={{ $json.body['What is this Testing?'] }}",
+            "Role": "={{ $json.body[\"Role\"]||\"not specified\" }}",
+            "Email": "={{ $json.body['Your Email'] }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "User Name",
+              "displayName": "User Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Purpose",
+              "displayName": "Purpose",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Role",
+              "displayName": "Role",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -48,
+        768
+      ],
+      "id": "d0f832ec-76ed-49a7-84f9-ec58837c55ba",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "PPSvBi1ORKV0OQDn",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "Connects Google forms and Google Sheet to n8n through the ngrok connection ",
+        "height": 112,
+        "width": 224
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -208,
+        304
+      ],
+      "id": "283877a6-bf23-4b0f-afa2-a38f3ae559e1",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "Prompting and generating mails for the Users",
+        "height": 80
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        80,
+        320
+      ],
+      "id": "dd04b33f-37c3-4304-a1a5-fda8111a45f9",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "Sends User Welcome email using SMTP connection and verification",
+        "height": 96
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        416,
+        320
+      ],
+      "id": "87f424c0-4a02-4d5b-9654-b49098fe91e4",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "AI model",
+        "height": 80,
+        "width": 150
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        368,
+        656
+      ],
+      "id": "15cee0e4-f4e1-46e2-ab3a-b0cd55c15f12",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "Google Sheets Connection via Google Cloud account ",
+        "height": 80
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -112,
+        928
+      ],
+      "id": "adc9f495-71aa-4c4f-a776-e87ae928175c",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "content": "Workflow: \n1. User sends a google form \n2. Users data get transferred to google sheets\n3. Welcome message gets send to the new users registered mail",
+        "width": 368,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -208,
+        64
+      ],
+      "id": "d4932782-e6fe-4364-9e85-2317bace7929",
+      "name": "Sticky Note5"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Send an Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "a3e80d58-794a-417a-8096-c9438a14fd22",
+  "meta": {
+    "instanceId": "5dbd5526ffb8216a76e80c922cc3c9c93ac0af890a0f7379fa7ec8c67799413c"
+  },
+  "nodeGroups": [],
+  "id": "FcFLpDjpFxrUwLPq",
+  "tags": []
+}
