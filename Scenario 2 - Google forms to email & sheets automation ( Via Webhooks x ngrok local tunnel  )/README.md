@@ -1,4 +1,4 @@
-# ⚡ Automated User Onboarding & Sync Workflow (n8n + AI)
+# ⚡ User Onboarding Via Google Forms to Sheets & Email (Webhook integration)
 
 An automated event-driven pipeline that captures new user registrations via Google Forms, logs applicant data to Google Sheets, and uses Google Gemini LLM to draft and send personalized onboarding emails in real time.
 
