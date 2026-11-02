@@ -1,0 +1,367 @@
+{
+  "name": "TEMP 01 | Business Messages Category Detection",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "3dc48620-672b-4589-b782-28b865cf7e8f",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "jsCode": "return [\n  { \"customer_message\": \"I need a new computer of this spec\"},\n  { \"customer_message\": \"The quality of the product is very nice\"},\n  { \"customer_message\": \"Hello world\"},\n  { \"customer_message\": \"your service is the worst\"},\n  { \"customer_message\": \"is the new iphone 17 available at the store?\"},\n  { \"customer_message\": \"The PC is great man! Love it\"},\n  { \"customer_message\": \"Is the gold Iphone available?\"},\n]"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        224,
+        0
+      ],
+      "id": "f7e9c847-2fc5-4cb4-bd57-5678d6a59db0",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Act as a professional data classifier. Classify the message below into exactly one of these categories: SALES INQUIRY, SPAM, COMPLAINT, or REVIEW.\nIMPORTANT RULES:\n- Output ONLY the category name.\n- Do NOT include any reasoning, periods, or introductory text.\n- Use ALL CAPS.\n\nMessage: {{ $json.customer_message }}\n",
+        "batching": {
+          "batchSize": 1,
+          "delayBetweenBatches": 3000
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        448,
+        0
+      ],
+      "id": "f00abcd2-82e4-404d-a742-30d546d2a5ca",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-flash-lite-latest",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        592,
+        256
+      ],
+      "id": "dcb648eb-e119-4f43-ad68-94c3aece58be",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "hPZIjT2n6z0vNhgT",
+          "name": "Business model to determine spam, inquiry and reviews"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.text }}",
+                    "rightValue": "SALES INQUIRY",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "782a29fc-66dd-4306-b1d3-822222e7e6d2"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "e7ab0912-0eb4-4544-a595-229a2495f2a0",
+                    "leftValue": "={{ $json.text }}",
+                    "rightValue": "REVIEW",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "7bd9227f-d2f3-4c17-8633-129b54ab0519",
+                    "leftValue": "={{ $json.text }}",
+                    "rightValue": "SPAM",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "58851351-9603-4d30-9f68-8cff69e1884f",
+                    "leftValue": "={{ $json.text }}",
+                    "rightValue": "COMPLAINT",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        816,
+        0
+      ],
+      "id": "a41fbafd-7713-4ca0-b8a8-5324539363f8",
+      "name": "Switch"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1184,
+        -272
+      ],
+      "id": "386b8c07-f6f5-41ad-ab30-e1269865e5f8",
+      "name": "SALES TEAM"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1312,
+        -96
+      ],
+      "id": "50ee543e-39e5-406c-8a28-83d1d88f951e",
+      "name": "REVIEWS"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1312,
+        128
+      ],
+      "id": "0d91f278-ad03-42ef-a10a-2161f4fb48b6",
+      "name": "SPAM"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1184,
+        304
+      ],
+      "id": "22245102-86ff-4708-a42d-159358a11519",
+      "name": "COMPLAINTS"
+    },
+    {
+      "parameters": {
+        "content": "## Trigger \n\nStart the Workflow",
+        "height": 80,
+        "width": 192
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -144,
+        -112
+      ],
+      "id": "0eb233f9-9371-4c72-bfef-2f62330f91c3",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## Code node\n\nCustomer Feedback Via Array list",
+        "height": 80,
+        "width": 288
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        144,
+        160
+      ],
+      "id": "6ee23c29-2c0c-47bd-ab6d-2159298134e0",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## AI Chain\n\nConvert the Customer Feedback into a Summarized format (English if feedback was in another language)",
+        "height": 144,
+        "width": 304
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        400,
+        -176
+      ],
+      "id": "ef7cb7de-f53a-44a6-90df-c8be1735bf19",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "## Switch Node\n\nCategorize the Feedbacks",
+        "height": 80
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        768,
+        240
+      ],
+      "id": "ed9cb36c-fe37-4cdf-8a70-d60edd162dac",
+      "name": "Sticky Note3"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "SALES TEAM",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "REVIEWS",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "SPAM",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "COMPLAINTS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "1b11c9fd-b43f-4f32-aec1-282fe4b85d76",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "5dbd5526ffb8216a76e80c922cc3c9c93ac0af890a0f7379fa7ec8c67799413c"
+  },
+  "nodeGroups": [],
+  "id": "F8RKFtO9NdJOjLjf",
+  "tags": []
+}
