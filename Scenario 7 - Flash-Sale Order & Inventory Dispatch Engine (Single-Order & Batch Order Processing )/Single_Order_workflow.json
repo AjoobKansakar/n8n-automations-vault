@@ -1,0 +1,548 @@
+{
+  "name": "Scenario 7.1 | Flash-Sale Order & Inventory Dispatch Engine (Single-Order processing)",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "The Context:\nYou run the backend automation for a boutique e-commerce store.\nA customer checks out on the website during a flash sale. The website sends a single Webhook payload containing the order details and an array of items purchased in their cart.\n\nThe Challenges You Must Solve:\nThe Nesting Problem: The items are trapped inside a nested array inside the order.\nThe Missing Data Problem: The cart payload only has product_id and quantity. It doesn't have the product's Supplier Name or Warehouse Bin Location, which lives in your Inventory Sheet.\nThe Human Error Problem: In the rush of the flash sale, the customer accidentally added the same product twice into separate cart rows.\nThe Calculation Problem: You need to calculate the total price for each line item (quantity * price) and format a delivery timeline.\nThe Dispatch Problem: The warehouse team needs one single consolidated manifest (array) to pack the box, not 10 separate notifications.",
+        "height": 384,
+        "width": 896
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -720,
+        -208
+      ],
+      "id": "c8e705e4-8570-4650-b17f-8a4741cd00ce",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "flash-sale-order",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -224,
+        464
+      ],
+      "id": "42636ed4-9e36-4d8b-8392-e60b66e8cb53",
+      "name": "Webhook",
+      "webhookId": "9f13e205-ddd2-4643-884d-61ff455cc541"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{\n  {\n    \"status\": \"Order Confirmed & Sent to Warehouse\",\n    \"order_id\": $('Webhook').first().json.body.order_id,\n    \"customer\": $('Webhook').first().json.body.customer_name,\n    \"total_unique_products\": $json[\"Combine Orders ( Ready to Ship )\"].length,\n    \"Final Orders\": $json[\"Combine Orders ( Ready to Ship )\"]\n  }\n}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        1488,
+        464
+      ],
+      "id": "7a15df28-df89-4aae-86df-25bacbdafe9b",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "body.cart_items",
+        "include": "allOtherFields",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        0,
+        464
+      ],
+      "id": "368fcf5b-0fc3-48f6-ac9f-fce3e52f2b50",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1S41NDC_BrQLdR4y5Uhr4_aDTaldBQ_gI8yDBFZVfP4c",
+          "mode": "list",
+          "cachedResultName": "Scenario 7 | Flash-Sale Order & Inventory Dispatch Engine ( Products Catalog )",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1S41NDC_BrQLdR4y5Uhr4_aDTaldBQ_gI8yDBFZVfP4c/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1S41NDC_BrQLdR4y5Uhr4_aDTaldBQ_gI8yDBFZVfP4c/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        0,
+        656
+      ],
+      "id": "2f2fb69e-2034-4f40-8c1c-8f0d751c5eba",
+      "name": "Get Master Inventory",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "PPSvBi1ORKV0OQDn",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "This Node is Responsible for:\n\n1. To start the workflow and Fetch the Customer's Cart data from Postman to Split out node\n\n2. To Start the workflow and Fetch the Product Data which is stored in a Google Sheet",
+        "width": 416,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -688,
+        448
+      ],
+      "id": "050f306b-897b-4bc0-98cc-af2f7f151656",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "This Node is Responsible for:\n\n1. Spliting the Customer's Cart_item data from 1 items ( combined orders ) to seperate data accordingly to customer's individual order data",
+        "height": 144,
+        "width": 272,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -80,
+        288
+      ],
+      "id": "e238bc7b-9012-41df-ba67-e3ac0e24593b",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "This Node is Responsible for:\n\n1. Storing all the Detail data of each of the Products",
+        "height": 128,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -64,
+        816
+      ],
+      "id": "3d459c4d-d430-4305-99ce-82c13ff1d662",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "Combines data from split out node & Google sheets based on the Product_id \n\nAnd displays the order's details for each of the products",
+        "width": 288,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        240,
+        640
+      ],
+      "id": "a6aa6b90-9c35-4bc7-928f-c9371ba6db07",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "advanced": true,
+        "mergeByFields": {
+          "values": [
+            {
+              "field1": "['body.cart_items'].product_id",
+              "field2": "Product ID"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        304,
+        464
+      ],
+      "id": "b8d35d51-d17a-4167-a197-e41e436f9925",
+      "name": "Merge Order Products with Product details"
+    },
+    {
+      "parameters": {
+        "compare": "selectedFields",
+        "fieldsToCompare": "['Product ID']",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.removeDuplicates",
+      "typeVersion": 2,
+      "position": [
+        560,
+        464
+      ],
+      "id": "423d0d24-e166-49f9-b4dd-72c11619cffa",
+      "name": "Remove Duplicates"
+    },
+    {
+      "parameters": {
+        "content": "Removes any redundant orders done by the customers for the same product ",
+        "height": 128,
+        "width": 176,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        512,
+        304
+      ],
+      "id": "72948cb0-aa24-4a79-a681-1d00b014fef5",
+      "name": "Sticky Note5"
+    },
+    {
+      "parameters": {
+        "content": "Optimize data and keep only the required data for the order and remove all the unnecessary datas \n\nAnd also Calucate the Total amount using formula",
+        "width": 320,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        704,
+        640
+      ],
+      "id": "9b565563-2f58-4f31-8236-a03120997bd6",
+      "name": "Sticky Note6"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ed4c4a8d-eb6d-4842-ac28-94be82afe23d",
+              "name": "order_id",
+              "value": "={{ $json.body.order_id }}",
+              "type": "string"
+            },
+            {
+              "id": "fe8c75eb-8911-4013-bb3b-d494a2e04fb5",
+              "name": "customer_name",
+              "value": "={{ $json.body.customer_name }}",
+              "type": "string"
+            },
+            {
+              "id": "52bc61ba-d3c0-4b16-ab6b-3abcc0bf2e49",
+              "name": "product_id ",
+              "value": "={{ $json['Product ID'] }}",
+              "type": "string"
+            },
+            {
+              "id": "e422b365-47db-495d-902e-921f4ac46621",
+              "name": "product_name",
+              "value": "={{ $json['Product Name'] }}",
+              "type": "string"
+            },
+            {
+              "id": "2f547e7d-3f88-4509-89e6-6fcefc7ede0e",
+              "name": "quantity",
+              "value": "={{ $json['body.cart_items'].quantity }}",
+              "type": "number"
+            },
+            {
+              "id": "2c2c5798-86ba-401c-856d-56093c5b7cb0",
+              "name": "unit_price",
+              "value": "={{ $json['Unit Price'] }}",
+              "type": "number"
+            },
+            {
+              "id": "1a58488a-2e7e-4c83-a575-74296e19c58e",
+              "name": "product_location",
+              "value": "={{ $json['Shelf Location'] }}",
+              "type": "string"
+            },
+            {
+              "id": "c9ca33a9-dbc6-4592-aa96-207fff78b6e7",
+              "name": "supplier",
+              "value": "={{ $json.Supplier }}",
+              "type": "string"
+            },
+            {
+              "id": "0908a7ff-a2bf-4f20-957e-944f9b0e2651",
+              "name": "Total",
+              "value": "={{ $json['body.cart_items'].quantity * $json['Unit Price'] }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        800,
+        464
+      ],
+      "id": "b0ea47b8-ec56-4992-9d98-32a1d4585450",
+      "name": "Optimize Order details & Calculate Total"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "destinationFieldName": "Combine Orders ( Ready to Ship )",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        1152,
+        464
+      ],
+      "id": "8bb37e82-a092-447a-a007-1da833ec77bf",
+      "name": "Combine orders into single order to Dispatch"
+    },
+    {
+      "parameters": {
+        "content": "Combines Bulk orders into a single JSON format so that multiple orders messages doesn't go for the same order",
+        "height": 80,
+        "width": 368,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1024,
+        368
+      ],
+      "id": "aa40ae58-099c-4e65-9f24-a1aba00bb807",
+      "name": "Sticky Note7"
+    },
+    {
+      "parameters": {
+        "content": "This Node is Responsible for:\n\n1. Closing the HTTP connection with the caller (Postman / Website).\n2. Returning the final processed order confirmation and dispatch manifest.\n3. Providing the HTTP Status Code (200 OK / 400 Bad Request) to confirm success.",
+        "height": 192,
+        "width": 368,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1376,
+        608
+      ],
+      "id": "53c19e39-3d60-42dc-9df7-4c13ba140ee6",
+      "name": "Sticky Note8"
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C0C70C01MLK",
+          "mode": "id"
+        },
+        "text": "=*📦 DISPATCHED ORDERS*\nOrder ID: {{ $json['Combine Orders ( Ready to Ship )'][0].order_id }}\nCustomer: {{ $json['Combine Orders ( Ready to Ship )'][0].customer_name }}\n\n*Items to Pick & Pack:*\n{{ $json['Combine Orders ( Ready to Ship )'].map(item => `• Product: *${item.product_name}* (ID: ${item['product_id '] || item.product_id}) | Qty: ${item.quantity} | Location: \\`${item.product_location}\\` | Supplier: ${item.supplier}`).join('\\n') }}",
+        "otherOptions": {
+          "includeLinkToWorkflow": false
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.7,
+      "position": [
+        2016,
+        272
+      ],
+      "id": "ca2a5982-e62d-4024-8100-e4e98e901008",
+      "name": "Notify Warehouse",
+      "webhookId": "3be8f686-599b-4083-8137-637a460acd27",
+      "credentials": {
+        "slackApi": {
+          "id": "gCQTuRSD4FwFEonL",
+          "name": "Slack account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "Sending Order Details for Dispatch to the Warehouse",
+        "height": 80,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1952,
+        432
+      ],
+      "id": "4732163a-14e5-4e7b-92f9-1fb0331c490a",
+      "name": "Sticky Note9"
+    },
+    {
+      "parameters": {
+        "content": "Sending Order confirmation Email to the Customer",
+        "height": 80,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1952,
+        576
+      ],
+      "id": "ae64217e-bcf4-4928-b14a-86c7368296e9",
+      "name": "Sticky Note10"
+    },
+    {
+      "parameters": {
+        "fromEmail": "aj.learns04@gmail.com",
+        "toEmail": "aj.learns04@gmail.com",
+        "subject": "Tero Order Audai xa ",
+        "emailFormat": "text",
+        "text": "=Oi, {{ $json['Combine Orders ( Ready to Ship )'][0].customer_name }}\n\nTero Order confirm vayera aaudai xa 2-3 days ma deliver hunxa.\nDelivery boy ko call please utha hai\n\nTero order details:\n(Order ID: {{ $json['Combine Orders ( Ready to Ship )'][0].order_id }}):\n{{ $json['Combine Orders ( Ready to Ship )'].map(p => `• ${p.product_name} (Qty: ${p.quantity}) - Rs. ${p.Total}`).join('\\n') }}\n\n-----------------------------------------------------------------\nTotal amount due: Rs. {{ $json['Combine Orders ( Ready to Ship )'].reduce((sum, item) => sum + Number(item.Total), 0) }}\n\nla moj gar bhai\n",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        2000,
+        672
+      ],
+      "id": "af893b1a-a3fb-4f16-bac7-7864ae17567d",
+      "name": "Notify Customers",
+      "webhookId": "de270048-0dd0-49b0-be71-70193072eff2",
+      "credentials": {
+        "smtp": {
+          "id": "A7oSbidGlLZcj8GU",
+          "name": "SMTP account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get Master Inventory",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Merge Order Products with Product details",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Master Inventory": {
+      "main": [
+        [
+          {
+            "node": "Merge Order Products with Product details",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge Order Products with Product details": {
+      "main": [
+        [
+          {
+            "node": "Remove Duplicates",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Remove Duplicates": {
+      "main": [
+        [
+          {
+            "node": "Optimize Order details & Calculate Total",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Optimize Order details & Calculate Total": {
+      "main": [
+        [
+          {
+            "node": "Combine orders into single order to Dispatch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Combine orders into single order to Dispatch": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Respond to Webhook": {
+      "main": [
+        [
+          {
+            "node": "Notify Customers",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Notify Warehouse",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "e8f9cac2-b460-4a02-87d0-e0cb5689b1e5",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "5dbd5526ffb8216a76e80c922cc3c9c93ac0af890a0f7379fa7ec8c67799413c"
+  },
+  "nodeGroups": [],
+  "id": "AKlyMX66ORjKM2Tb",
+  "tags": []
+}
