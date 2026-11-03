@@ -1,0 +1,548 @@
+{
+  "name": "Scenario 6 | Daily Order Tracking System",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "30f45cec-1896-4b57-a326-c9d86572c4e1",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1BImmoP1tJEO4SUqqtcA8vD3BW6y27p1CqG12_5IPSjE",
+          "mode": "list",
+          "cachedResultName": "Scenario 6 | Daily Order Tracking System",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1BImmoP1tJEO4SUqqtcA8vD3BW6y27p1CqG12_5IPSjE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1BImmoP1tJEO4SUqqtcA8vD3BW6y27p1CqG12_5IPSjE/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        224,
+        0
+      ],
+      "id": "7f304f88-d0c8-41f5-b551-961c7061e99f",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "PPSvBi1ORKV0OQDn",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.Status }}",
+                    "rightValue": "Pending",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "de6a4768-f8e4-4d26-aa4d-7f311ba5ce1f"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Pending Orders "
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "f8637474-969c-4660-9ec1-e40d8831e6f0",
+                    "leftValue": "={{ $json.Status }}",
+                    "rightValue": "Processing",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Orders in Process"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "c08b736d-a4df-471b-80b3-3a8c45d1f2db",
+                    "leftValue": "={{ $json.Status }}",
+                    "rightValue": "Cancelled",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Cancelled Orders"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "4d491f85-0197-4dd1-a5d1-70b74fd7f2f0",
+                    "leftValue": "={{ $json.Status }}",
+                    "rightValue": "Refunded",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Refunded Orders"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "e5f32d44-0e8f-41ac-bd54-33d69f7d7757",
+                    "leftValue": "={{ $json.Status }}",
+                    "rightValue": "Delivered",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Completed Orders"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        464,
+        -48
+      ],
+      "id": "aa69d7f8-fecb-4b8e-8e89-a2262b190249",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C0C2VSL9JAJ",
+          "mode": "id"
+        },
+        "text": "=📦 *NEW ORDER FOR PROCESSING*\n*Order ID:* {{ $json['Order ID'] }} \n*Customer:* {{ $json['Customer Name'] }} \n*Amount:* {{ $json.Amount }} \n*Status:* `{{ $json.Status }}`\n👉 *Action Required:* Warehouse team, please pick, pack, and generate the shipping label!",
+        "otherOptions": {
+          "includeLinkToWorkflow": false
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.7,
+      "position": [
+        880,
+        -160
+      ],
+      "id": "02755b11-be9c-48b9-8f8e-296a4bc035ee",
+      "name": "Notify Staffs | Order Processing",
+      "webhookId": "d6930bf0-f6c2-4ad1-a739-78d7f8908b4c",
+      "credentials": {
+        "slackApi": {
+          "id": "gCQTuRSD4FwFEonL",
+          "name": "Slack account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C0C2WT012HH",
+          "mode": "id"
+        },
+        "text": "=*Finance alert !!!: {{ $json.Status.toUpperCase() }} Orders*\nOrder ID: {{ $json['Order ID'] }}\nCustomer: {{ $json['Customer Name'] }}\nAmount: {{ $json.Amount }}\nMail: {{ $json['Customer Email'] }}\n\n*Action Required !!! :* {{ $json.Status === 'Refunded' ? 'Deduct from daily revenue and confirm bank payout.' : 'Ensure the order is halt and not futhur proceeded ' }}",
+        "otherOptions": {
+          "includeLinkToWorkflow": false
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.7,
+      "position": [
+        880,
+        144
+      ],
+      "id": "f2d90c10-5b54-4f8c-b319-88432a68ad1f",
+      "name": "Notify Finance | Order Status",
+      "webhookId": "f7f08892-7b85-4d21-8d05-88a3c93b69cd",
+      "credentials": {
+        "slackApi": {
+          "id": "gCQTuRSD4FwFEonL",
+          "name": "Slack account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "aj.learns04@gmail.com",
+        "toEmail": "={{ $json['Customer Email'] }}",
+        "subject": "=Your Order: {{ $json['Order ID'] }} has arrived, Thank you for your purchase, {{ $json['Customer Name'] }}",
+        "emailFormat": "text",
+        "text": "=Hi {{ $json['Customer Name'] }},\n\nGreat news! Your package for order {{ $json['Order ID'] }} (Total: {{ $json.Amount }}) has been marked as DELIVERED.\n\nThank you so much for shopping with us! We appreciate your business and hope you enjoy your purchase.\n\nIf you have any questions, need assistance with your order, or would like to leave a review, simply reply directly to this email.\n\nWarm regards,\nTeam KasRrat",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        704,
+        272
+      ],
+      "id": "941f340e-d062-4057-97ad-a8b0579f0668",
+      "name": "Notify Customers | Orders Dispatched",
+      "webhookId": "1f9e2f48-ea2a-4c50-872d-2e1733512c04",
+      "credentials": {
+        "smtp": {
+          "id": "A7oSbidGlLZcj8GU",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "aj.learns04@gmail.com",
+        "toEmail": "ajoob.work@gmail.com",
+        "subject": "=FINANCE: {{ $json.Status === 'Refunded' ? 'Refund Verification Needed' : 'Order Cancellation' }} - {{ $json['Order ID'] }}",
+        "emailFormat": "text",
+        "text": "=Hello Finance Team,\n\nAn order requires your attention:\n- Order ID: {{ $json['Order ID'] }}\n- Customer: {{ $json['Customer Name'] }}\n- Amount: {{ $json.Amount }}\n- Status: {{ $json.Status }}\n\nACTION REQUIRED FOR THIS ORDER:\n{{ $json.Status === 'Refunded' \n   ? '👉 Please Check if this order was Refunded or not?.' \n   : '👉 Please ensure that this order has been cancelled successfully.' \n}}\n\nBest regards,\nOrder Status Bot",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1008,
+        0
+      ],
+      "id": "dd461464-7087-4dc1-9c8d-9b3b31f5b5a8",
+      "name": "Alert Finance Team | Cancelled & Refunded Orders",
+      "webhookId": "3c45a5a3-681a-4f6e-988c-8e0f0012208a",
+      "credentials": {
+        "smtp": {
+          "id": "A7oSbidGlLZcj8GU",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "aj.learns04@gmail.com",
+        "toEmail": "ajoob.work@gmail.com",
+        "subject": "=Urgent: Pending Orders  {{ $json['Order ID'] }} of {{ $json['Customer Name'] }}",
+        "emailFormat": "text",
+        "text": "=Hello Staff members, \n\nThe following orders is currently PENDING review:\n- Order ID: {{ $json['Order ID'] }}\n- Cutomer: {{ $json['Customer Name'] }}\n- Amount: {{ $json.Amount }}\n- Customer mail: {{ $json['Customer Email'] }}\nPlease reach out to the customers to complete this order (ASAP) !!!",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        704,
+        -288
+      ],
+      "id": "9a12be3a-5d17-4267-acce-fced1d4ade16",
+      "name": "Alert Staffs | Pending Orders",
+      "webhookId": "0320144b-02dd-45de-b62c-ee9566c46ba8",
+      "credentials": {
+        "smtp": {
+          "id": "A7oSbidGlLZcj8GU",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "Scenario 6 | Daily Order Tracking System\n- Manually Review recent orders from the sheet\n- Manually Decide based on order status\n- If pending —> Alert Service Team (Email)\n- If Processiing —> Notify Operational Team in (Slack)\n- If Cancelled/Refounded —> Notify finance team ( Email + Slack )\n- if Delivered —> Send the messages to the Operational Team in ( Slack ) as order completed\n\nSend the right message to the right team, maintain a log of work done, pending, teams notified ( Email & Slack Integration )",
+        "height": 272,
+        "width": 768,
+        "color": "#454545"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -32,
+        -608
+      ],
+      "id": "f3ac86b7-dbcf-4cc8-b6f2-fd4cea085df8",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "Manual Trigger for Testing",
+        "height": 80,
+        "width": 272
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -320,
+        0
+      ],
+      "id": "68bfec89-9689-43bc-9d65-0719bbd90d34",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "Google Sheets \n( All Data is present here )",
+        "height": 80
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        160,
+        160
+      ],
+      "id": "645881ae-5fac-4aca-9cb2-17bb966102e0",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "Switch Node\n( Separates all the Cases of the Orders )",
+        "height": 80
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        288,
+        -144
+      ],
+      "id": "f50e54b1-61a4-445e-805e-fe8ed69ef92c",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "Email Node\n( Send emails Via SMTP )",
+        "height": 80,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        928,
+        -288
+      ],
+      "id": "dc01e604-e96a-464c-8490-5e74a9cc8632",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "content": "Email Node\n( Send emails Via SMTP )",
+        "height": 80,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1248,
+        0
+      ],
+      "id": "11cc4a29-b164-41d6-94e8-7e6805896dbb",
+      "name": "Sticky Note5"
+    },
+    {
+      "parameters": {
+        "content": "Email Node\n( Send emails Via SMTP )",
+        "height": 80,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        848,
+        352
+      ],
+      "id": "1b13bad2-af71-4b54-88a1-6c0efab714da",
+      "name": "Sticky Note6"
+    },
+    {
+      "parameters": {
+        "content": "Slack Node \n( Send messages of the order to respected chanels for updates )",
+        "height": 112,
+        "width": 224,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1104,
+        176
+      ],
+      "id": "1b4549d2-b136-4f93-844b-bdb468e4ffe1",
+      "name": "Sticky Note7"
+    },
+    {
+      "parameters": {
+        "content": "Slack Node \n( Send messages of the order to respected chanels for updates )",
+        "height": 112,
+        "width": 224,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1104,
+        -176
+      ],
+      "id": "c25efa5e-9316-4590-89f7-81a46c24fcef",
+      "name": "Sticky Note8"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Alert Staffs | Pending Orders",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Notify Staffs | Order Processing",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Alert Finance Team | Cancelled & Refunded Orders",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Notify Finance | Order Status",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Alert Finance Team | Cancelled & Refunded Orders",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Notify Finance | Order Status",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Notify Customers | Orders Dispatched",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "e0a0c91a-647f-4be2-b68b-1e778eb9c6a3",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "5dbd5526ffb8216a76e80c922cc3c9c93ac0af890a0f7379fa7ec8c67799413c"
+  },
+  "nodeGroups": [],
+  "id": "IRdNHlsKS8QPZNnV",
+  "tags": []
+}
