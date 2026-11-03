@@ -6,7 +6,7 @@ An end-to-end e-commerce order processing pipeline that catches raw cart webhook
 
 ## 🖼️ Workflow Architecture
 
-![Workflow Canvas](Scenario 7 Workflow Canvas (Single Order).png)
+![Workflow Canvas](Scenario_07_Single_Order_Canvas.png)
 
 ---
 
