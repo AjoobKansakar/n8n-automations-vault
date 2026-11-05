@@ -1,0 +1,547 @@
+{
+  "name": "Scenario 8 | Multi-app Lead Management Automation Via Survey + CRM",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "company-lead-management",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "e04fb434-712a-4781-ae69-4cc34d707ba1",
+      "name": "Webhook",
+      "webhookId": "83357d08-69c3-470d-8e34-7196040690e4"
+    },
+    {
+      "parameters": {
+        "content": "## The Business Story (Why Are We Building This?)\n\nIn an un-automated business, this process is slow and painful:\nAn operator sits at a computer daily, manually checks Google Forms responses, and copies-pastes them into a giant Google Sheet.\n\nA sales manager manually scrolls through the sheet, checks if the email is a real company or personal email, and tags them as \"Qualified\".\n\nFor every qualified lead, the manager manually:\n1. Types a message in Slack: \"Hey team, new lead!\"\n2. Opens Notion and creates a task card: \"Call John Doe\".\n3. Opens Airtable and creates a new CRM record.\n\nThe Problem: Leads wait hours or days for a response, and human error causes leads to slip through the cracks.\n\nThe Solution: This n8n workflow does all of this in less than 2 seconds automatically.",
+        "height": 384,
+        "width": 1152
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -800,
+        -640
+      ],
+      "id": "50bb4602-7bcd-4e02-8dd3-90b8c213a5cd",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1aPO_qMfSqlvUUdPub-LZeUjAyATG3cjAqugGihVy7S0",
+          "mode": "list",
+          "cachedResultName": "Scenario 8 | Survey Form Lists for Lead Generation",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1aPO_qMfSqlvUUdPub-LZeUjAyATG3cjAqugGihVy7S0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1aPO_qMfSqlvUUdPub-LZeUjAyATG3cjAqugGihVy7S0/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Full Name": "={{ $json.body['Full Name'] }}",
+            "Email": "={{ $json.body.Email }}",
+            "Company Name": "={{ $json.body['Company Name'] }}",
+            "Test Reason": "={{ $json.body['Test Reason'] }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Full Name",
+              "displayName": "Full Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Test Reason",
+              "displayName": "Test Reason",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Company Name",
+              "displayName": "Company Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        224,
+        0
+      ],
+      "id": "8c67f7a3-8b60-4e49-b8c0-ac4c1d7a75dc",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "PPSvBi1ORKV0OQDn",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "e9235389-3459-4a32-a106-bfbeb9d51ffa",
+              "leftValue": "={{ $json['Company Name'] }}",
+              "rightValue": "@gmail.com",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "df2914c5-f218-4e6b-8a3e-c569c8e325ae",
+              "leftValue": "={{ $json.Email }}",
+              "rightValue": "@gmail.com",
+              "operator": {
+                "type": "string",
+                "operation": "notEndsWith"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        448,
+        0
+      ],
+      "id": "aaa2be6d-1044-4902-912f-ffb289d62fdd",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C0CDB7268BA",
+          "mode": "id"
+        },
+        "text": "=**NEW COMPANY LEAD**\nCompany name: {{ $('Append row in sheet').item.json['Company Name'] }}\n\nCompany Email: {{ $('Append row in sheet').item.json.Email }}\n\nNew company added to the CRM !",
+        "otherOptions": {
+          "includeLinkToWorkflow": false
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.7,
+      "position": [
+        640,
+        -208
+      ],
+      "id": "480e53e7-9cfd-48a7-8ff2-9835c4df982a",
+      "name": "Alert Team for new Company Lead",
+      "webhookId": "75009601-457e-4972-b38e-71ff24400709",
+      "credentials": {
+        "slackApi": {
+          "id": "gCQTuRSD4FwFEonL",
+          "name": "Slack account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "dataSourceId": {
+          "__rl": true,
+          "value": "4065a97e-5cb2-804b-8124-000b4da2b3b4",
+          "mode": "list",
+          "cachedResultName": "Lead Company follow-up tasks",
+          "cachedResultUrl": "https://app.notion.com/p/4065a97e5cb28083b8abf7c0fefbaa68"
+        },
+        "title": "={{ \"Follow up with \" + $('Webhook').item.json.body['Full Name'] }}",
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Status|status",
+              "statusValue": "Not started"
+            },
+            {
+              "key": "Company|rich_text",
+              "textContent": "={{ $('Webhook').item.json.body['Company Name'] }}"
+            },
+            {
+              "key": "Email|email",
+              "emailValue": "={{ $('Webhook').item.json.body.Email }}"
+            }
+          ]
+        },
+        "blockUi": {
+          "blockValues": [
+            {
+              "type": "heading_2",
+              "textContent": "Test Reason"
+            },
+            {
+              "textContent": "={{ $('Append row in sheet').item.json['Test Reason'] || $('Webhook').item.json.body.Role }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 3,
+      "position": [
+        864,
+        -208
+      ],
+      "id": "08a7132a-5fcf-41d9-b86e-fd89f216e940",
+      "name": "Tasks Generation in Notion",
+      "credentials": {
+        "notionApi": {
+          "id": "3VRC8SwSdR9JrQJL",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "app0iszCV7CTQXSkz",
+          "mode": "list",
+          "cachedResultName": "Scenario 8 | Company Lead Generations",
+          "cachedResultUrl": "https://airtable.com/app0iszCV7CTQXSkz"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblktLgOb1ylxRgpT",
+          "mode": "list",
+          "cachedResultName": "Leads",
+          "cachedResultUrl": "https://airtable.com/app0iszCV7CTQXSkz/tblktLgOb1ylxRgpT"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Company Name": "={{ $('Append row in sheet').item.json['Company Name'] }}",
+            "Contact Person": "={{ $('Append row in sheet').item.json['Full Name'] }}",
+            "Email": "={{ $('Append row in sheet').item.json.Email }}",
+            "Role & Tests": "={{ $('Append row in sheet').item.json['Test Reason'] }}",
+            "Status": "New Lead"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Company Name",
+              "displayName": "Company Name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Contact Person",
+              "displayName": "Contact Person",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Role & Tests",
+              "displayName": "Role & Tests",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "New Lead",
+                  "value": "New Lead"
+                },
+                {
+                  "name": "In progress / discussion",
+                  "value": "In progress / discussion"
+                },
+                {
+                  "name": "Done / Qualified",
+                  "value": "Done / Qualified"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        1088,
+        -208
+      ],
+      "id": "b8b751a3-34d1-4a23-87a9-e850e3a35045",
+      "name": "New Leads CRM records",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "o3NOISApkvsuEHe5",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Trigger\n\nReceive the data payload from google form",
+        "height": 112,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -288,
+        0
+      ],
+      "id": "855c3c71-ee4d-4bf9-86c4-cfe93cd87ac5",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## Form Submissions Record \n\nKeeps the record of every single form submissions",
+        "height": 128,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        160,
+        192
+      ],
+      "id": "aae32db5-832c-4dbc-bd54-d9e79537edab",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "## Seperator\n\nif the email meets the condition the automation continues or else it stops \n\nCondition: Company Email ",
+        "width": 320,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        496,
+        144
+      ],
+      "id": "c59802b2-c9ee-45c1-9281-745345108c58",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "## If True : Alerts staff for New leads\n\nWhen New company leads come through it sends a slack message to the staff Chanel",
+        "height": 144,
+        "width": 288,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        448,
+        -368
+      ],
+      "id": "bae24932-b77f-44bb-bc1c-bc5768c9d23e",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "content": "## Creates Daily To-Do List for STAFFS\n\nMakes the plan for the staff on all the leads their status and whats happening with that lead  ",
+        "width": 288,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        784,
+        -400
+      ],
+      "id": "2339fab8-90f7-4033-8294-1dde5d8516bd",
+      "name": "Sticky Note5"
+    },
+    {
+      "parameters": {
+        "content": "## Database\n\nCreates a proper database table format record for all the leads ",
+        "height": 128,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1312,
+        -224
+      ],
+      "id": "69fa6894-463f-418a-adf4-fbbb198f40d1",
+      "name": "Sticky Note6"
+    },
+    {
+      "parameters": {
+        "content": "## If False : Stops the automations",
+        "height": 80,
+        "width": 304,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        672,
+        16
+      ],
+      "id": "1a291c14-bc16-4a7e-af2e-2301a16bf1d3",
+      "name": "Sticky Note7"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Alert Team for new Company Lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Alert Team for new Company Lead": {
+      "main": [
+        [
+          {
+            "node": "Tasks Generation in Notion",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tasks Generation in Notion": {
+      "main": [
+        [
+          {
+            "node": "New Leads CRM records",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "9d35f5ca-5e34-47ac-8501-6f6495fb975d",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "5dbd5526ffb8216a76e80c922cc3c9c93ac0af890a0f7379fa7ec8c67799413c"
+  },
+  "nodeGroups": [],
+  "id": "MyemWl1XQj1ygSAP",
+  "tags": []
+}
