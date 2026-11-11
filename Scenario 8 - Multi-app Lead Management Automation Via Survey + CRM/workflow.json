@@ -1,5 +1,13 @@
 {
+  "id": "MyemWl1XQj1ygSAP",
   "name": "Scenario 8 | Multi-app Lead Management Automation Via Survey + CRM",
+  "active": false,
+  "activeVersionId": null,
+  "createdAt": "2026-10-26T18:07:24.387Z",
+  "updatedAt": "2026-11-07T19:31:49.826Z",
+  "isArchived": false,
+  "versionId": "64fb303d-b314-4609-b290-659bd749d624",
+  "triggerCount": 0,
   "nodes": [
     {
       "parameters": {
@@ -450,8 +458,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        1312,
-        -224
+        1264,
+        -112
       ],
       "id": "69fa6894-463f-418a-adf4-fbbb198f40d1",
       "name": "Sticky Note6"
@@ -473,7 +481,6 @@
       "name": "Sticky Note7"
     }
   ],
-  "pinData": {},
   "connections": {
     "Webhook": {
       "main": [
@@ -531,17 +538,25 @@
       ]
     }
   },
-  "active": false,
+  "nodeGroups": [],
   "settings": {
     "executionOrder": "v1",
     "binaryMode": "separate"
   },
-  "versionId": "9d35f5ca-5e34-47ac-8501-6f6495fb975d",
+  "staticData": null,
+  "pinData": {},
   "meta": {
-    "templateCredsSetupCompleted": true,
-    "instanceId": "5dbd5526ffb8216a76e80c922cc3c9c93ac0af890a0f7379fa7ec8c67799413c"
+    "templateCredsSetupCompleted": true
   },
-  "nodeGroups": [],
-  "id": "MyemWl1XQj1ygSAP",
-  "tags": []
+  "tags": [],
+  "shared": [
+    {
+      "role": "workflow:owner",
+      "workflowId": "MyemWl1XQj1ygSAP",
+      "projectId": "027ZUDsoSefW2yaA",
+      "createdAt": "2026-10-26T18:07:24.390Z",
+      "updatedAt": "2026-10-26T18:07:24.390Z"
+    }
+  ],
+  "activeVersion": null
 }
