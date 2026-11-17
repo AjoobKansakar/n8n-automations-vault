@@ -4,22 +4,11 @@
   "active": false,
   "activeVersionId": null,
   "createdAt": "2026-11-07T16:58:14.162Z",
-  "updatedAt": "2026-11-11T17:33:11.343Z",
+  "updatedAt": "2026-11-17T19:12:55.475Z",
   "isArchived": false,
-  "versionId": "9b0a27a0-6f42-426d-bf46-36f11acd57e8",
+  "versionId": "f188536f-5f39-425a-83a1-ceb3fd57e13f",
   "triggerCount": 0,
   "nodes": [
-    {
-      "parameters": {},
-      "type": "n8n-nodes-base.manualTrigger",
-      "typeVersion": 1,
-      "position": [
-        0,
-        0
-      ],
-      "id": "dde3de54-a1e0-4549-b3a3-2b49e9f71ebc",
-      "name": "When clicking ‘Execute workflow’"
-    },
     {
       "parameters": {
         "jsCode": "return $input.all().map(item => {\n  const workflow = item.json;\n\n  // 1. Clean the workflow name (replace |, :, /, \\, ?, \", * with clean dashes)\n  const cleanName = workflow.name\n    .replace(/[|:\\\\\\/\\*\\?\"<>]/g, '-')\n    .replace(/[\\u201C\\u201D]/g, '') // remove curly quotes\n    .replace(/\\s+/g, ' ')          // remove multiple spaces\n    .trim();\n\n  // 2. Define the path inside your GitHub repo\n  const filePath = `${cleanName}/workflow.json`;\n\n  // 3. Convert the entire workflow into a formatted JSON string\n  const fileContent = JSON.stringify(workflow, null, 2);\n\n  // 4. Return clean data ready for GitHub\n  return {\n    json: {\n      workflow_id: workflow.id,\n      original_name: workflow.name,\n      clean_name: cleanName,\n      file_path: filePath,\n      file_content: fileContent,\n      updated_at: workflow.updatedAt\n    }\n  };\n});"
@@ -179,7 +168,7 @@
         },
         "filePath": "={{ $('Clean Name Formats & Prepare Files').item.json.file_path }}",
         "fileContent": "={{ $('Clean Name Formats & Prepare Files').item.json.file_content }}",
-        "commitMessage": "={{ \" Auto-update \" + $('Clean Name Formats & Prepare Files').item.json.clean_name + \" [\" + $now.toFormat('dd LLL yyyy') + \"]\" }}"
+        "commitMessage": "={{ $('Manual Commit Message Form Trigger').first()?.json?.['Commit Message'] || (\"chore(backup): auto-sync \" + $('Clean Name Formats & Prepare Files').item.json.clean_name + \" [\" + $now.toFormat('dd LLL yyyy') + \"]\") }}"
       },
       "type": "n8n-nodes-base.github",
       "typeVersion": 1.1,
@@ -212,7 +201,7 @@
         },
         "filePath": "={{ $('Clean Name Formats & Prepare Files').item.json.file_path }}",
         "fileContent": "={{ $('Clean Name Formats & Prepare Files').item.json.file_content }}",
-        "commitMessage": "={{ \" Auto-create \" + $('Clean Name Formats & Prepare Files').item.json.clean_name + \" [\" + $now.toFormat('dd LLL yyyy') + \"]\" }}"
+        "commitMessage": "={{ $('Manual Commit Message Form Trigger').first()?.json?.['Commit Message'] || (\"chore(backup): auto-sync \" + $('Clean Name Formats & Prepare Files').item.json.clean_name + \" [\" + $now.toFormat('dd LLL yyyy') + \"]\") }}"
       },
       "type": "n8n-nodes-base.github",
       "typeVersion": 1.1,
@@ -229,20 +218,61 @@
           "name": "GitHub account"
         }
       }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "dde3de54-a1e0-4549-b3a3-2b49e9f71ebc",
+      "name": "Auto Commit Updates Trigger"
+    },
+    {
+      "parameters": {
+        "formTitle": "GitHub Milestone Backup Pusher",
+        "formDescription": "Enter the commit message for the updates that you just made.",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Commit Message",
+              "placeholder": "e.g. feat: added error handling to webhook",
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.6,
+      "position": [
+        0,
+        -176
+      ],
+      "id": "d67aa0f9-610d-4730-bb74-750a4d274179",
+      "name": "Manual Commit Message Form Trigger",
+      "webhookId": "fe9eaf75-9fbc-4320-b867-a5846e0e1d2b"
+    },
+    {
+      "parameters": {
+        "content": "## Commit Message Page Link\n\nhttp://localhost:5678/form-test/fe9eaf75-9fbc-4320-b867-a5846e0e1d2b",
+        "height": 112,
+        "width": 352,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -128,
+        -304
+      ],
+      "id": "c6a4b959-277e-48bc-9ca2-bc8c8a0ddd20",
+      "name": "Sticky Note"
     }
   ],
   "connections": {
-    "When clicking ‘Execute workflow’": {
-      "main": [
-        [
-          {
-            "node": "Get all workflows currently available in n8n",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Clean Name Formats & Prepare Files": {
       "main": [
         [
@@ -299,6 +329,28 @@
         [
           {
             "node": "GitHub - Create New Repository",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Auto Commit Updates Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get all workflows currently available in n8n",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Manual Commit Message Form Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get all workflows currently available in n8n",
             "type": "main",
             "index": 0
           }
