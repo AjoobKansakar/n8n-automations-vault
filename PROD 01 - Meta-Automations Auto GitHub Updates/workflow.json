@@ -1,13 +1,13 @@
 {
   "id": "QjIT8boZq7YOsMM6",
   "name": "PROD 01 | Meta-Automations “Auto GitHub Updates”",
-  "active": false,
-  "activeVersionId": null,
+  "active": true,
+  "activeVersionId": "7c270f1a-04ba-4203-ab18-35df629a47e9",
   "createdAt": "2026-11-07T16:58:14.162Z",
-  "updatedAt": "2026-11-18T13:02:27.183Z",
+  "updatedAt": "2026-11-18T13:45:17.533Z",
   "isArchived": false,
-  "versionId": "46550aab-7f5d-40d9-9925-e3425120d425",
-  "triggerCount": 0,
+  "versionId": "e8dea8fe-c011-40f7-9bcc-0602afcb3a49",
+  "triggerCount": 2,
   "nodes": [
     {
       "parameters": {
@@ -168,7 +168,7 @@
         },
         "filePath": "={{ $('Clean Name Formats & Prepare Files').item.json.file_path }}",
         "fileContent": "={{ $('Clean Name Formats & Prepare Files').item.json.file_content }}",
-        "commitMessage": "={{ $('Manual Commit Message Form Trigger').first()?.json?.['Commit Message'] || (\"chore(backup): auto-sync \" + $('Clean Name Formats & Prepare Files').item.json.clean_name + \" [\" + $now.toFormat('dd LLL yyyy') + \"]\") }}"
+        "commitMessage": "={{ $('Commit Message Form Manual Trigger').first()?.json?.['Commit Message'] || (\"chore(backup): auto-sync \" + $('Clean Name Formats & Prepare Files').item.json.clean_name + \" [\" + $now.toFormat('dd LLL yyyy') + \"]\") }}"
       },
       "type": "n8n-nodes-base.github",
       "typeVersion": 1.1,
@@ -201,7 +201,7 @@
         },
         "filePath": "={{ $('Clean Name Formats & Prepare Files').item.json.file_path }}",
         "fileContent": "={{ $('Clean Name Formats & Prepare Files').item.json.file_content }}",
-        "commitMessage": "={{ $('Manual Commit Message Form Trigger').first()?.json?.['Commit Message'] || (\"chore(backup): auto-sync \" + $('Clean Name Formats & Prepare Files').item.json.clean_name + \" [\" + $now.toFormat('dd LLL yyyy') + \"]\") }}"
+        "commitMessage": "={{ $('Commit Message Form Manual Trigger').first()?.json?.['Commit Message'] || (\"chore(backup): auto-sync \" + $('Clean Name Formats & Prepare Files').item.json.clean_name + \" [\" + $now.toFormat('dd LLL yyyy') + \"]\") }}"
       },
       "type": "n8n-nodes-base.github",
       "typeVersion": 1.1,
@@ -221,32 +221,7 @@
     },
     {
       "parameters": {
-        "formTitle": "GitHub Milestone Backup Pusher",
-        "formDescription": "Enter the commit message for the updates that you just made.",
-        "formFields": {
-          "values": [
-            {
-              "fieldLabel": "Commit Message",
-              "placeholder": "e.g. feat: added error handling to webhook",
-              "requiredField": true
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.formTrigger",
-      "typeVersion": 2.6,
-      "position": [
-        -64,
-        0
-      ],
-      "id": "d67aa0f9-610d-4730-bb74-750a4d274179",
-      "name": "Manual Commit Message Form Trigger",
-      "webhookId": "fe9eaf75-9fbc-4320-b867-a5846e0e1d2b"
-    },
-    {
-      "parameters": {
-        "content": "## Commit Message Page Link\n\nhttp://localhost:5678/form-test/fe9eaf75-9fbc-4320-b867-a5846e0e1d2b",
+        "content": "## Commit Message Page Link\n\nhttp://localhost:5678/form/fe9eaf75-9fbc-4320-b867-a5846e0e1d2b",
         "height": 112,
         "width": 352,
         "color": 6
@@ -335,6 +310,31 @@
       ],
       "id": "68627f0e-2736-4eb0-adbc-d1f4729cfb79",
       "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "formTitle": "GitHub Milestone Backup Pusher",
+        "formDescription": "Enter the commit message for the updates that you just made.",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Commit Message",
+              "placeholder": "e.g. feat: added error handling to webhook",
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.6,
+      "position": [
+        -64,
+        0
+      ],
+      "id": "d67aa0f9-610d-4730-bb74-750a4d274179",
+      "name": "Commit Message Form Manual Trigger",
+      "webhookId": "fe9eaf75-9fbc-4320-b867-a5846e0e1d2b"
     }
   ],
   "connections": {
@@ -400,7 +400,12 @@
         ]
       ]
     },
-    "Manual Commit Message Form Trigger": {
+    "Manual Auto Commit Updates Trigger": {
+      "main": [
+        []
+      ]
+    },
+    "Commit Message Form Manual Trigger": {
       "main": [
         [
           {
@@ -409,11 +414,6 @@
             "index": 0
           }
         ]
-      ]
-    },
-    "Manual Auto Commit Updates Trigger": {
-      "main": [
-        []
       ]
     }
   },
@@ -426,7 +426,16 @@
     "callerPolicy": "workflowsFromSameOwner",
     "availableInMCP": false
   },
-  "staticData": null,
+  "staticData": {
+    "node:Schedule Trigger ( 11pm Execution 1x per day )": {
+      "recurrenceRules": [
+        null
+      ],
+      "recurrenceRuleSignatures": [
+        null
+      ]
+    }
+  },
   "pinData": {},
   "meta": {
     "templateCredsSetupCompleted": true
@@ -441,5 +450,424 @@
       "updatedAt": "2026-11-07T16:58:14.166Z"
     }
   ],
-  "activeVersion": null
+  "activeVersion": {
+    "versionId": "7c270f1a-04ba-4203-ab18-35df629a47e9",
+    "workflowId": "QjIT8boZq7YOsMM6",
+    "nodes": [
+      {
+        "parameters": {
+          "jsCode": "return $input.all().map(item => {\n  const workflow = item.json;\n\n  // 1. Clean the workflow name (replace |, :, /, \\, ?, \", * with clean dashes)\n  const cleanName = workflow.name\n    .replace(/[|:\\\\\\/\\*\\?\"<>]/g, '-')\n    .replace(/[\\u201C\\u201D]/g, '') // remove curly quotes\n    .replace(/\\s+/g, ' ')          // remove multiple spaces\n    .trim();\n\n  // 2. Define the path inside your GitHub repo\n  const filePath = `${cleanName}/workflow.json`;\n\n  // 3. Convert the entire workflow into a formatted JSON string\n  const fileContent = JSON.stringify(workflow, null, 2);\n\n  // 4. Return clean data ready for GitHub\n  return {\n    json: {\n      workflow_id: workflow.id,\n      original_name: workflow.name,\n      clean_name: cleanName,\n      file_path: filePath,\n      file_content: fileContent,\n      updated_at: workflow.updatedAt\n    }\n  };\n});"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          672,
+          0
+        ],
+        "id": "734f8b41-240c-4f6a-8b7d-e8b5906e6607",
+        "name": "Clean Name Formats & Prepare Files"
+      },
+      {
+        "parameters": {
+          "resource": "file",
+          "operation": "get",
+          "owner": {
+            "__rl": true,
+            "value": "AjoobKansakar",
+            "mode": "name"
+          },
+          "repository": {
+            "__rl": true,
+            "value": "n8n-automations-vault",
+            "mode": "name"
+          },
+          "filePath": "={{ $json.file_path }}",
+          "additionalParameters": {}
+        },
+        "type": "n8n-nodes-base.github",
+        "typeVersion": 1.1,
+        "position": [
+          896,
+          0
+        ],
+        "id": "8b9e8d11-da31-4e10-ba11-9e5f35b7c46d",
+        "name": "Check If the File exists in the Repository",
+        "webhookId": "be10f79d-d1c5-4cb7-ad70-de9695e20705",
+        "credentials": {
+          "githubApi": {
+            "id": "ITfxtTcNL5WtITxR",
+            "name": "GitHub account"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "filters": {},
+          "requestOptions": {}
+        },
+        "type": "n8n-nodes-base.n8n",
+        "typeVersion": 1,
+        "position": [
+          224,
+          0
+        ],
+        "id": "36dd6d54-dc58-43ce-86c1-80e13b007e95",
+        "name": "Get all workflows currently available in n8n",
+        "credentials": {
+          "n8nApi": {
+            "id": "kpalLEdjJVfgcQ65",
+            "name": "n8n account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 3
+            },
+            "conditions": [
+              {
+                "id": "708a4c49-2548-4f0e-8b12-b3f5dc7c3ba4",
+                "leftValue": "={{ $json.updatedAt }}",
+                "rightValue": "2026-11-07T00:00:00",
+                "operator": {
+                  "type": "dateTime",
+                  "operation": "after"
+                }
+              },
+              {
+                "id": "1ffb9ca9-0c26-47a2-bc14-f46783a211be",
+                "leftValue": "={{ $json.name.toLowerCase() }}",
+                "rightValue": "^(scenario|prod)",
+                "operator": {
+                  "type": "string",
+                  "operation": "regex"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.filter",
+        "typeVersion": 2.3,
+        "position": [
+          448,
+          0
+        ],
+        "id": "2043c8d1-e665-4746-be56-ee50f55bb430",
+        "name": "Filter out Workflows to push into GitHub"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 3
+            },
+            "conditions": [
+              {
+                "id": "651c8de5-90a4-48e0-9c0f-af37e8cf9bb9",
+                "leftValue": "={{ $json.error }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "string",
+                  "operation": "empty",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.3,
+        "position": [
+          1120,
+          0
+        ],
+        "id": "34bae136-d915-4dbd-b591-5388eed3ef50",
+        "name": "Does the Repo Already Exist???"
+      },
+      {
+        "parameters": {
+          "resource": "file",
+          "operation": "edit",
+          "owner": {
+            "__rl": true,
+            "value": "AjoobKansakar",
+            "mode": "name"
+          },
+          "repository": {
+            "__rl": true,
+            "value": "n8n-automations-vault",
+            "mode": "name"
+          },
+          "filePath": "={{ $('Clean Name Formats & Prepare Files').item.json.file_path }}",
+          "fileContent": "={{ $('Clean Name Formats & Prepare Files').item.json.file_content }}",
+          "commitMessage": "={{ $('Manual Commit Message Form Trigger').first()?.json?.['Commit Message'] || (\"chore(backup): auto-sync \" + $('Clean Name Formats & Prepare Files').item.json.clean_name + \" [\" + $now.toFormat('dd LLL yyyy') + \"]\") }}"
+        },
+        "type": "n8n-nodes-base.github",
+        "typeVersion": 1.1,
+        "position": [
+          1376,
+          -208
+        ],
+        "id": "79ca6ec5-0377-4ccb-9c9a-fa2e89c45e9e",
+        "name": "GitHub - Update Existing Files",
+        "webhookId": "acdf60c3-b7f2-4d6e-9c99-0d68760978b1",
+        "credentials": {
+          "githubApi": {
+            "id": "ITfxtTcNL5WtITxR",
+            "name": "GitHub account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "resource": "file",
+          "owner": {
+            "__rl": true,
+            "value": "AjoobKansakar",
+            "mode": "name"
+          },
+          "repository": {
+            "__rl": true,
+            "value": "n8n-automations-vault",
+            "mode": "name"
+          },
+          "filePath": "={{ $('Clean Name Formats & Prepare Files').item.json.file_path }}",
+          "fileContent": "={{ $('Clean Name Formats & Prepare Files').item.json.file_content }}",
+          "commitMessage": "={{ $('Manual Commit Message Form Trigger').first()?.json?.['Commit Message'] || (\"chore(backup): auto-sync \" + $('Clean Name Formats & Prepare Files').item.json.clean_name + \" [\" + $now.toFormat('dd LLL yyyy') + \"]\") }}"
+        },
+        "type": "n8n-nodes-base.github",
+        "typeVersion": 1.1,
+        "position": [
+          1360,
+          128
+        ],
+        "id": "6107a7d7-3b5e-416f-82a8-e1410756e7f7",
+        "name": "GitHub - Create New Repository",
+        "webhookId": "4ef3c1e0-ed24-4256-b755-78ed1a5c3399",
+        "credentials": {
+          "githubApi": {
+            "id": "ITfxtTcNL5WtITxR",
+            "name": "GitHub account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "formTitle": "GitHub Milestone Backup Pusher",
+          "formDescription": "Enter the commit message for the updates that you just made.",
+          "formFields": {
+            "values": [
+              {
+                "fieldLabel": "Commit Message",
+                "placeholder": "e.g. feat: added error handling to webhook",
+                "requiredField": true
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.formTrigger",
+        "typeVersion": 2.6,
+        "position": [
+          -64,
+          0
+        ],
+        "id": "d67aa0f9-610d-4730-bb74-750a4d274179",
+        "name": "Manual Commit Message Form Trigger",
+        "webhookId": "fe9eaf75-9fbc-4320-b867-a5846e0e1d2b"
+      },
+      {
+        "parameters": {
+          "content": "## Commit Message Page Link\n\nhttp://localhost:5678/form/fe9eaf75-9fbc-4320-b867-a5846e0e1d2b",
+          "height": 112,
+          "width": 352,
+          "color": 6
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          432,
+          -240
+        ],
+        "id": "c6a4b959-277e-48bc-9ca2-bc8c8a0ddd20",
+        "name": "Sticky Note"
+      },
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.manualTrigger",
+        "typeVersion": 1,
+        "position": [
+          -656,
+          0
+        ],
+        "id": "dde3de54-a1e0-4549-b3a3-2b49e9f71ebc",
+        "name": "Manual Auto Commit Updates Trigger"
+      },
+      {
+        "parameters": {
+          "content": "## Manual Trigger - Auto commit updates (static commits)\n\n- this only executes if you manually click on execute then it checks for any new files or any updates on the old files and commits it to GitHub ",
+          "height": 144,
+          "width": 384,
+          "color": "#BBFF29"
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          -784,
+          -176
+        ],
+        "id": "e84811cd-e52c-45e9-965f-b011d3d496f0",
+        "name": "Sticky Note1"
+      },
+      {
+        "parameters": {
+          "rule": {
+            "interval": [
+              {
+                "triggerAtHour": 23
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "typeVersion": 1.4,
+        "position": [
+          -656,
+          240
+        ],
+        "id": "ad3588a4-c2e2-4b0b-a4ab-61dac64be9ca",
+        "name": "Schedule Trigger ( 11pm Execution 1x per day )"
+      },
+      {
+        "parameters": {
+          "content": "## Schedule Trigger - Auto commit updates (static commits) / 1x per day @11pm\n\n- this node auto executes 1x per day @11pm checks for any updates and commits it to GitHub if any found",
+          "width": 384,
+          "color": "#32FF0A"
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          -784,
+          432
+        ],
+        "id": "90c9014d-40b6-4bca-8e84-1c3f834e6de9",
+        "name": "Sticky Note2"
+      },
+      {
+        "parameters": {
+          "content": "## Manual Trigger - Dynamic/Customize commits \n\n- when this node is executed the user and make a commit using the link given and make a commit according to the files updated",
+          "width": 320,
+          "color": "#32FF00"
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          -176,
+          160
+        ],
+        "id": "68627f0e-2736-4eb0-adbc-d1f4729cfb79",
+        "name": "Sticky Note3"
+      }
+    ],
+    "connections": {
+      "Clean Name Formats & Prepare Files": {
+        "main": [
+          [
+            {
+              "node": "Check If the File exists in the Repository",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Get all workflows currently available in n8n": {
+        "main": [
+          [
+            {
+              "node": "Filter out Workflows to push into GitHub",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Filter out Workflows to push into GitHub": {
+        "main": [
+          [
+            {
+              "node": "Clean Name Formats & Prepare Files",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Check If the File exists in the Repository": {
+        "main": [
+          [
+            {
+              "node": "Does the Repo Already Exist???",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Does the Repo Already Exist???": {
+        "main": [
+          [
+            {
+              "node": "GitHub - Update Existing Files",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "GitHub - Create New Repository",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Manual Commit Message Form Trigger": {
+        "main": [
+          [
+            {
+              "node": "Get all workflows currently available in n8n",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Manual Auto Commit Updates Trigger": {
+        "main": [
+          []
+        ]
+      }
+    },
+    "nodeGroups": [],
+    "authors": "Ajoob Kansakar",
+    "name": "Push workflow updates v.1",
+    "description": "pushing + committing updates to GitHub Manually using n8n form trigger node",
+    "autosaved": true,
+    "createdAt": "2026-11-18T13:41:40.419Z",
+    "updatedAt": "2026-11-18T13:42:48.000Z"
+  }
 }
