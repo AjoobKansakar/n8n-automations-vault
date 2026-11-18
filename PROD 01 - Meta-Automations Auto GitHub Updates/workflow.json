@@ -4,9 +4,9 @@
   "active": false,
   "activeVersionId": null,
   "createdAt": "2026-11-07T16:58:14.162Z",
-  "updatedAt": "2026-11-17T19:12:55.475Z",
+  "updatedAt": "2026-11-18T13:02:27.183Z",
   "isArchived": false,
-  "versionId": "f188536f-5f39-425a-83a1-ceb3fd57e13f",
+  "versionId": "46550aab-7f5d-40d9-9925-e3425120d425",
   "triggerCount": 0,
   "nodes": [
     {
@@ -220,17 +220,6 @@
       }
     },
     {
-      "parameters": {},
-      "type": "n8n-nodes-base.manualTrigger",
-      "typeVersion": 1,
-      "position": [
-        0,
-        0
-      ],
-      "id": "dde3de54-a1e0-4549-b3a3-2b49e9f71ebc",
-      "name": "Auto Commit Updates Trigger"
-    },
-    {
       "parameters": {
         "formTitle": "GitHub Milestone Backup Pusher",
         "formDescription": "Enter the commit message for the updates that you just made.",
@@ -248,8 +237,8 @@
       "type": "n8n-nodes-base.formTrigger",
       "typeVersion": 2.6,
       "position": [
-        0,
-        -176
+        -64,
+        0
       ],
       "id": "d67aa0f9-610d-4730-bb74-750a4d274179",
       "name": "Manual Commit Message Form Trigger",
@@ -265,11 +254,87 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -128,
-        -304
+        432,
+        -240
       ],
       "id": "c6a4b959-277e-48bc-9ca2-bc8c8a0ddd20",
       "name": "Sticky Note"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -656,
+        0
+      ],
+      "id": "dde3de54-a1e0-4549-b3a3-2b49e9f71ebc",
+      "name": "Manual Auto Commit Updates Trigger"
+    },
+    {
+      "parameters": {
+        "content": "## Manual Trigger - Auto commit updates (static commits)\n\n- this only executes if you manually click on execute then it checks for any new files or any updates on the old files and commits it to GitHub ",
+        "height": 144,
+        "width": 384,
+        "color": "#BBFF29"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -784,
+        -176
+      ],
+      "id": "e84811cd-e52c-45e9-965f-b011d3d496f0",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 23
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -656,
+        240
+      ],
+      "id": "ad3588a4-c2e2-4b0b-a4ab-61dac64be9ca",
+      "name": "Schedule Trigger ( 11pm Execution 1x per day )"
+    },
+    {
+      "parameters": {
+        "content": "## Schedule Trigger - Auto commit updates (static commits) / 1x per day @11pm\n\n- this node auto executes 1x per day @11pm checks for any updates and commits it to GitHub if any found",
+        "width": 384,
+        "color": "#32FF0A"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -784,
+        432
+      ],
+      "id": "90c9014d-40b6-4bca-8e84-1c3f834e6de9",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "## Manual Trigger - Dynamic/Customize commits \n\n- when this node is executed the user and make a commit using the link given and make a commit according to the files updated",
+        "width": 320,
+        "color": "#32FF00"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -176,
+        160
+      ],
+      "id": "68627f0e-2736-4eb0-adbc-d1f4729cfb79",
+      "name": "Sticky Note3"
     }
   ],
   "connections": {
@@ -335,17 +400,6 @@
         ]
       ]
     },
-    "Auto Commit Updates Trigger": {
-      "main": [
-        [
-          {
-            "node": "Get all workflows currently available in n8n",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Manual Commit Message Form Trigger": {
       "main": [
         [
@@ -356,12 +410,21 @@
           }
         ]
       ]
+    },
+    "Manual Auto Commit Updates Trigger": {
+      "main": [
+        []
+      ]
     }
   },
   "nodeGroups": [],
   "settings": {
     "executionOrder": "v1",
-    "binaryMode": "separate"
+    "binaryMode": "separate",
+    "timeSavedMode": "fixed",
+    "timezone": "Asia/Kathmandu",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
   },
   "staticData": null,
   "pinData": {},
