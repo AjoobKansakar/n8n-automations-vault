@@ -2,11 +2,11 @@
   "id": "QjIT8boZq7YOsMM6",
   "name": "PROD 01 | Meta-Automations “Auto GitHub Updates”",
   "active": true,
-  "activeVersionId": "7c270f1a-04ba-4203-ab18-35df629a47e9",
+  "activeVersionId": "7b3bcd72-1a39-4198-a84f-c8837a22224c",
   "createdAt": "2026-11-07T16:58:14.162Z",
-  "updatedAt": "2026-11-19T18:22:37.836Z",
+  "updatedAt": "2026-11-19T19:51:14.069Z",
   "isArchived": false,
-  "versionId": "775932a3-b1b2-4aeb-b7db-2c76471fe4ed",
+  "versionId": "7b3bcd72-1a39-4198-a84f-c8837a22224c",
   "triggerCount": 2,
   "nodes": [
     {
@@ -103,6 +103,15 @@
                 "type": "string",
                 "operation": "regex"
               }
+            },
+            {
+              "id": "32fca191-b7af-441d-b01e-65780d8ec723",
+              "leftValue": "={{ $json.name.toLowerCase() }}",
+              "rightValue": "={{ $('Manual Commit Message Form Trigger').first().json['Workflow Name'].toLowerCase().trim() }}",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
             }
           ],
           "combinator": "and"
@@ -168,7 +177,7 @@
         },
         "filePath": "={{ $('Clean Name Formats & Prepare Files').item.json.file_path }}",
         "fileContent": "={{ $('Clean Name Formats & Prepare Files').item.json.file_content }}",
-        "commitMessage": "={{ $('Commit Message Form Manual Trigger').first()?.json?.['Commit Message'] || (\"chore(backup): auto-sync \" + $('Clean Name Formats & Prepare Files').item.json.clean_name + \" [\" + $now.toFormat('dd LLL yyyy') + \"]\") }}"
+        "commitMessage": "={{ $('Manual Commit Message Form Trigger').first()?.json?.['Commit Message'] || (\"chore(backup): auto-sync \" + $('Clean Name Formats & Prepare Files').item.json.clean_name + \" [\" + $now.toFormat('dd LLL yyyy') + \"]\") }}"
       },
       "type": "n8n-nodes-base.github",
       "typeVersion": 1.1,
@@ -201,7 +210,7 @@
         },
         "filePath": "={{ $('Clean Name Formats & Prepare Files').item.json.file_path }}",
         "fileContent": "={{ $('Clean Name Formats & Prepare Files').item.json.file_content }}",
-        "commitMessage": "={{ $('Commit Message Form Manual Trigger').first()?.json?.['Commit Message'] || (\"chore(backup): auto-sync \" + $('Clean Name Formats & Prepare Files').item.json.clean_name + \" [\" + $now.toFormat('dd LLL yyyy') + \"]\") }}"
+        "commitMessage": "={{ $('Manual Commit Message Form Trigger').first()?.json?.['Commit Message'] || (\"chore(backup): auto-sync \" + $('Clean Name Formats & Prepare Files').item.json.clean_name + \" [\" + $now.toFormat('dd LLL yyyy') + \"]\") }}"
       },
       "type": "n8n-nodes-base.github",
       "typeVersion": 1.1,
@@ -309,31 +318,6 @@
       ],
       "id": "68627f0e-2736-4eb0-adbc-d1f4729cfb79",
       "name": "Sticky Note3"
-    },
-    {
-      "parameters": {
-        "formTitle": "GitHub Milestone Backup Pusher",
-        "formDescription": "Enter the commit message for the updates that you just made.",
-        "formFields": {
-          "values": [
-            {
-              "fieldLabel": "Commit Message",
-              "placeholder": "e.g. feat: added error handling to webhook",
-              "requiredField": true
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.formTrigger",
-      "typeVersion": 2.6,
-      "position": [
-        -192,
-        0
-      ],
-      "id": "d67aa0f9-610d-4730-bb74-750a4d274179",
-      "name": "Commit Message Form Manual Trigger",
-      "webhookId": "fe9eaf75-9fbc-4320-b867-a5846e0e1d2b"
     },
     {
       "parameters": {
@@ -458,6 +442,36 @@
       ],
       "id": "aadaf0d2-de55-46b3-a35d-9f5274509521",
       "name": "Sticky Note11"
+    },
+    {
+      "parameters": {
+        "formTitle": "GitHub Milestone Backup Pusher",
+        "formDescription": "Enter the commit message for the updates that you just made.",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Commit Message",
+              "placeholder": "e.g. feat: added error handling to webhook",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Workflow Name",
+              "placeholder": "e.g. Scenario 8 or PROD 01",
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.6,
+      "position": [
+        -192,
+        0
+      ],
+      "id": "d67aa0f9-610d-4730-bb74-750a4d274179",
+      "name": "Manual Commit Message Form Trigger",
+      "webhookId": "fe9eaf75-9fbc-4320-b867-a5846e0e1d2b"
     }
   ],
   "connections": {
@@ -528,7 +542,7 @@
         []
       ]
     },
-    "Commit Message Form Manual Trigger": {
+    "Manual Commit Message Form Trigger": {
       "main": [
         [
           {
@@ -574,7 +588,7 @@
     }
   ],
   "activeVersion": {
-    "versionId": "7c270f1a-04ba-4203-ab18-35df629a47e9",
+    "versionId": "7b3bcd72-1a39-4198-a84f-c8837a22224c",
     "workflowId": "QjIT8boZq7YOsMM6",
     "nodes": [
       {
@@ -584,7 +598,7 @@
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
         "position": [
-          672,
+          960,
           0
         ],
         "id": "734f8b41-240c-4f6a-8b7d-e8b5906e6607",
@@ -610,7 +624,7 @@
         "type": "n8n-nodes-base.github",
         "typeVersion": 1.1,
         "position": [
-          896,
+          1360,
           0
         ],
         "id": "8b9e8d11-da31-4e10-ba11-9e5f35b7c46d",
@@ -671,6 +685,15 @@
                   "type": "string",
                   "operation": "regex"
                 }
+              },
+              {
+                "id": "32fca191-b7af-441d-b01e-65780d8ec723",
+                "leftValue": "={{ $json.name.toLowerCase() }}",
+                "rightValue": "={{ $('Manual Commit Message Form Trigger').first().json['Workflow Name'].toLowerCase().trim() }}",
+                "operator": {
+                  "type": "string",
+                  "operation": "contains"
+                }
               }
             ],
             "combinator": "and"
@@ -680,7 +703,7 @@
         "type": "n8n-nodes-base.filter",
         "typeVersion": 2.3,
         "position": [
-          448,
+          560,
           0
         ],
         "id": "2043c8d1-e665-4746-be56-ee50f55bb430",
@@ -714,7 +737,7 @@
         "type": "n8n-nodes-base.if",
         "typeVersion": 2.3,
         "position": [
-          1120,
+          1744,
           0
         ],
         "id": "34bae136-d915-4dbd-b591-5388eed3ef50",
@@ -741,8 +764,8 @@
         "type": "n8n-nodes-base.github",
         "typeVersion": 1.1,
         "position": [
-          1376,
-          -208
+          2176,
+          -128
         ],
         "id": "79ca6ec5-0377-4ccb-9c9a-fa2e89c45e9e",
         "name": "GitHub - Update Existing Files",
@@ -774,8 +797,8 @@
         "type": "n8n-nodes-base.github",
         "typeVersion": 1.1,
         "position": [
-          1360,
-          128
+          2176,
+          160
         ],
         "id": "6107a7d7-3b5e-416f-82a8-e1410756e7f7",
         "name": "GitHub - Create New Repository",
@@ -789,40 +812,14 @@
       },
       {
         "parameters": {
-          "formTitle": "GitHub Milestone Backup Pusher",
-          "formDescription": "Enter the commit message for the updates that you just made.",
-          "formFields": {
-            "values": [
-              {
-                "fieldLabel": "Commit Message",
-                "placeholder": "e.g. feat: added error handling to webhook",
-                "requiredField": true
-              }
-            ]
-          },
-          "options": {}
-        },
-        "type": "n8n-nodes-base.formTrigger",
-        "typeVersion": 2.6,
-        "position": [
-          -64,
-          0
-        ],
-        "id": "d67aa0f9-610d-4730-bb74-750a4d274179",
-        "name": "Manual Commit Message Form Trigger",
-        "webhookId": "fe9eaf75-9fbc-4320-b867-a5846e0e1d2b"
-      },
-      {
-        "parameters": {
-          "content": "## Commit Message Page Link\n\nhttp://localhost:5678/form/fe9eaf75-9fbc-4320-b867-a5846e0e1d2b",
-          "height": 112,
+          "content": "# Production URL\n\n## Commit Message Page Link\n\nhttp://localhost:5678/form/fe9eaf75-9fbc-4320-b867-a5846e0e1d2b",
           "width": 352,
           "color": 6
         },
         "type": "n8n-nodes-base.stickyNote",
         "typeVersion": 1,
         "position": [
-          432,
+          480,
           -240
         ],
         "id": "c6a4b959-277e-48bc-9ca2-bc8c8a0ddd20",
@@ -898,11 +895,165 @@
         "type": "n8n-nodes-base.stickyNote",
         "typeVersion": 1,
         "position": [
-          -176,
-          160
+          -288,
+          176
         ],
         "id": "68627f0e-2736-4eb0-adbc-d1f4729cfb79",
         "name": "Sticky Note3"
+      },
+      {
+        "parameters": {
+          "content": "## n8n node \n- Fetches all the workflows currently available on workspace",
+          "height": 112,
+          "width": 224,
+          "color": "#320000"
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          160,
+          192
+        ],
+        "id": "eb400710-9437-4f5f-9af6-13c1202cc5e8",
+        "name": "Sticky Note4"
+      },
+      {
+        "parameters": {
+          "content": "## Filter Node\n- filter outs workflow which meets the conditions\ni.e.\n1. workflows created / updated after a certain date setup on the node\n2. filter only the workflows which starts with the setup alias",
+          "height": 240,
+          "width": 272,
+          "color": "#320000"
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          480,
+          176
+        ],
+        "id": "3b3809d5-a6b2-434c-8b93-6d8e24d31d1d",
+        "name": "Sticky Note5"
+      },
+      {
+        "parameters": {
+          "content": "## Code Node\n- JavaScript code used to update the workflows name to the required format and remove any extra spaces or characters\n( which GitHub does not accept )",
+          "width": 288,
+          "color": "#320000"
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          864,
+          176
+        ],
+        "id": "4a4b882d-a89e-448c-a20c-74390d518523",
+        "name": "Sticky Note6"
+      },
+      {
+        "parameters": {
+          "content": "## GitHub Get files node\n- retrieves all files & folders currently present in the repository",
+          "height": 112,
+          "color": "#320000"
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          1296,
+          192
+        ],
+        "id": "a1d681bd-0012-496e-a1a8-37ec4179602c",
+        "name": "Sticky Note7"
+      },
+      {
+        "parameters": {
+          "content": "## Switch node\n- Checks whether its a completely new item being made or just an update for a old item\n( Via Conditions )",
+          "height": 144,
+          "color": "#320000"
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          1680,
+          176
+        ],
+        "id": "f723bf87-ba15-479b-b478-82c67e0504f2",
+        "name": "Sticky Note8"
+      },
+      {
+        "parameters": {
+          "content": "# True Branch\n- No error = The file ALREADY EXISTS ➔ We UPDATE it \n(Edit a file) GitHub node",
+          "height": 112,
+          "width": 272,
+          "color": 5
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          2096,
+          -256
+        ],
+        "id": "fd1b47f9-0115-4221-9cf5-cad41c6f9f1d",
+        "name": "Sticky Note9"
+      },
+      {
+        "parameters": {
+          "content": "# False Branch\n- (Error present): The file is MISSING ➔ We CREATE it (Create a file) GitHub node",
+          "height": 128,
+          "color": 5
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          2112,
+          352
+        ],
+        "id": "c24126f2-0ae0-4a53-984a-c3824a4f6fb8",
+        "name": "Sticky Note10"
+      },
+      {
+        "parameters": {
+          "content": "# GitHub Repository Push Automation Workflow\n\n1. Push new workflows to Repo & push updates \n2. Update old workflows ",
+          "height": 128,
+          "width": 464,
+          "color": 7
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          -800,
+          -512
+        ],
+        "id": "aadaf0d2-de55-46b3-a35d-9f5274509521",
+        "name": "Sticky Note11"
+      },
+      {
+        "parameters": {
+          "formTitle": "GitHub Milestone Backup Pusher",
+          "formDescription": "Enter the commit message for the updates that you just made.",
+          "formFields": {
+            "values": [
+              {
+                "fieldLabel": "Commit Message",
+                "placeholder": "e.g. feat: added error handling to webhook",
+                "requiredField": true
+              },
+              {
+                "fieldLabel": "Workflow Name",
+                "placeholder": "e.g. Scenario 8 or PROD 01",
+                "requiredField": true
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.formTrigger",
+        "typeVersion": 2.6,
+        "position": [
+          -192,
+          0
+        ],
+        "id": "d67aa0f9-610d-4730-bb74-750a4d274179",
+        "name": "Manual Commit Message Form Trigger",
+        "webhookId": "fe9eaf75-9fbc-4320-b867-a5846e0e1d2b"
       }
     ],
     "connections": {
@@ -968,6 +1119,11 @@
           ]
         ]
       },
+      "Manual Auto Commit Updates Trigger": {
+        "main": [
+          []
+        ]
+      },
       "Manual Commit Message Form Trigger": {
         "main": [
           [
@@ -978,19 +1134,14 @@
             }
           ]
         ]
-      },
-      "Manual Auto Commit Updates Trigger": {
-        "main": [
-          []
-        ]
       }
     },
     "nodeGroups": [],
     "authors": "Ajoob Kansakar",
-    "name": "Push workflow updates v.1",
-    "description": "pushing + committing updates to GitHub Manually using n8n form trigger node",
+    "name": "Version 3",
+    "description": "Fixing the Manual form Trigger name mismatch issue",
     "autosaved": true,
-    "createdAt": "2026-11-18T13:41:40.419Z",
-    "updatedAt": "2026-11-18T13:42:48.000Z"
+    "createdAt": "2026-11-19T19:51:11.109Z",
+    "updatedAt": "2026-11-19T19:54:53.000Z"
   }
 }
