@@ -4,9 +4,9 @@
   "active": true,
   "activeVersionId": "7c270f1a-04ba-4203-ab18-35df629a47e9",
   "createdAt": "2026-11-07T16:58:14.162Z",
-  "updatedAt": "2026-11-19T18:01:54.935Z",
+  "updatedAt": "2026-11-19T18:22:37.836Z",
   "isArchived": false,
-  "versionId": "6a76b076-f796-4c43-8f20-624eec74cbc9",
+  "versionId": "775932a3-b1b2-4aeb-b7db-2c76471fe4ed",
   "triggerCount": 2,
   "nodes": [
     {
@@ -221,8 +221,7 @@
     },
     {
       "parameters": {
-        "content": "## Commit Message Page Link\n\nhttp://localhost:5678/form/fe9eaf75-9fbc-4320-b867-a5846e0e1d2b",
-        "height": 112,
+        "content": "# Production URL\n\n## Commit Message Page Link\n\nhttp://localhost:5678/form/fe9eaf75-9fbc-4320-b867-a5846e0e1d2b",
         "width": 352,
         "color": 6
       },
