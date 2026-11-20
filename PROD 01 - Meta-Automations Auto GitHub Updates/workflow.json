@@ -4,9 +4,9 @@
   "active": true,
   "activeVersionId": "7b3bcd72-1a39-4198-a84f-c8837a22224c",
   "createdAt": "2026-11-07T16:58:14.162Z",
-  "updatedAt": "2026-11-19T19:51:14.069Z",
+  "updatedAt": "2026-11-20T18:07:33.612Z",
   "isArchived": false,
-  "versionId": "7b3bcd72-1a39-4198-a84f-c8837a22224c",
+  "versionId": "46b99f30-79bc-4e8b-aff6-90270affd719",
   "triggerCount": 2,
   "nodes": [
     {
@@ -182,8 +182,8 @@
       "type": "n8n-nodes-base.github",
       "typeVersion": 1.1,
       "position": [
-        2176,
-        -128
+        2256,
+        -192
       ],
       "id": "79ca6ec5-0377-4ccb-9c9a-fa2e89c45e9e",
       "name": "GitHub - Update Existing Files",
@@ -215,8 +215,8 @@
       "type": "n8n-nodes-base.github",
       "typeVersion": 1.1,
       "position": [
-        2176,
-        160
+        2096,
+        16
       ],
       "id": "6107a7d7-3b5e-416f-82a8-e1410756e7f7",
       "name": "GitHub - Create New Repository",
@@ -406,8 +406,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        2096,
-        -256
+        2448,
+        -192
       ],
       "id": "fd1b47f9-0115-4221-9cf5-cad41c6f9f1d",
       "name": "Sticky Note9"
@@ -421,8 +421,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        2112,
-        352
+        2288,
+        48
       ],
       "id": "c24126f2-0ae0-4a53-984a-c3824a4f6fb8",
       "name": "Sticky Note10"
@@ -472,6 +472,19 @@
       "id": "d67aa0f9-610d-4730-bb74-750a4d274179",
       "name": "Manual Commit Message Form Trigger",
       "webhookId": "fe9eaf75-9fbc-4320-b867-a5846e0e1d2b"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1. Get the new workflow JSON from Docker\nconst newContent = $('Clean Name Formats & Prepare Files').item.json.file_content;\n\n// 2. Get the existing file content from GitHub (decoded from base64)\nconst existingBase64 = $('Check If the File exists in the Repository').item.binary?.data?.data;\nconst existingContent = existingBase64 ? Buffer.from(existingBase64, 'base64').toString('utf-8') : '';\n\n// 3. Compare them!\nconst hasChanged = newContent.trim() !== existingContent.trim();\n\nreturn {\n  json: {\n    has_changed: hasChanged,\n    workflow_name: $('Clean Name Formats & Prepare Files').item.json.clean_name,\n    file_path: $('Clean Name Formats & Prepare Files').item.json.file_path,\n    file_content: newContent\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2032,
+        -192
+      ],
+      "id": "43231afe-44c7-4314-a68f-7e8ce6998499",
+      "name": "Has Workflow Changed?"
     }
   ],
   "connections": {
@@ -523,7 +536,7 @@
       "main": [
         [
           {
-            "node": "GitHub - Update Existing Files",
+            "node": "Has Workflow Changed?",
             "type": "main",
             "index": 0
           }
@@ -547,6 +560,17 @@
         [
           {
             "node": "Get all workflows currently available in n8n",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has Workflow Changed?": {
+      "main": [
+        [
+          {
+            "node": "GitHub - Update Existing Files",
             "type": "main",
             "index": 0
           }
