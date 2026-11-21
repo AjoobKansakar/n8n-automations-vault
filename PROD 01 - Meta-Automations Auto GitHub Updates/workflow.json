@@ -4,9 +4,9 @@
   "active": true,
   "activeVersionId": "7b3bcd72-1a39-4198-a84f-c8837a22224c",
   "createdAt": "2026-11-07T16:58:14.162Z",
-  "updatedAt": "2026-11-20T18:07:33.612Z",
+  "updatedAt": "2026-11-21T18:04:04.253Z",
   "isArchived": false,
-  "versionId": "46b99f30-79bc-4e8b-aff6-90270affd719",
+  "versionId": "10555f20-b120-45c3-85d8-dd08eafab83c",
   "triggerCount": 2,
   "nodes": [
     {
@@ -177,13 +177,13 @@
         },
         "filePath": "={{ $('Clean Name Formats & Prepare Files').item.json.file_path }}",
         "fileContent": "={{ $('Clean Name Formats & Prepare Files').item.json.file_content }}",
-        "commitMessage": "={{ $('Manual Commit Message Form Trigger').first()?.json?.['Commit Message'] || (\"chore(backup): auto-sync \" + $('Clean Name Formats & Prepare Files').item.json.clean_name + \" [\" + $now.toFormat('dd LLL yyyy') + \"]\") }}"
+        "commitMessage": "={{ $json.text.trim() }}"
       },
       "type": "n8n-nodes-base.github",
       "typeVersion": 1.1,
       "position": [
-        2256,
-        -192
+        2640,
+        -176
       ],
       "id": "79ca6ec5-0377-4ccb-9c9a-fa2e89c45e9e",
       "name": "GitHub - Update Existing Files",
@@ -399,15 +399,15 @@
     {
       "parameters": {
         "content": "# True Branch\n- No error = The file ALREADY EXISTS ➔ We UPDATE it \n(Edit a file) GitHub node",
-        "height": 112,
-        "width": 272,
+        "height": 144,
+        "width": 208,
         "color": 5
       },
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        2448,
-        -192
+        1632,
+        -176
       ],
       "id": "fd1b47f9-0115-4221-9cf5-cad41c6f9f1d",
       "name": "Sticky Note9"
@@ -422,7 +422,7 @@
       "typeVersion": 1,
       "position": [
         2288,
-        48
+        16
       ],
       "id": "c24126f2-0ae0-4a53-984a-c3824a4f6fb8",
       "name": "Sticky Note10"
@@ -461,7 +461,9 @@
             }
           ]
         },
-        "options": {}
+        "options": {
+          "appendAttribution": true
+        }
       },
       "type": "n8n-nodes-base.formTrigger",
       "typeVersion": 2.6,
@@ -475,16 +477,85 @@
     },
     {
       "parameters": {
-        "jsCode": "// 1. Get the new workflow JSON from Docker\nconst newContent = $('Clean Name Formats & Prepare Files').item.json.file_content;\n\n// 2. Get the existing file content from GitHub (decoded from base64)\nconst existingBase64 = $('Check If the File exists in the Repository').item.binary?.data?.data;\nconst existingContent = existingBase64 ? Buffer.from(existingBase64, 'base64').toString('utf-8') : '';\n\n// 3. Compare them!\nconst hasChanged = newContent.trim() !== existingContent.trim();\n\nreturn {\n  json: {\n    has_changed: hasChanged,\n    workflow_name: $('Clean Name Formats & Prepare Files').item.json.clean_name,\n    file_path: $('Clean Name Formats & Prepare Files').item.json.file_path,\n    file_content: newContent\n  }\n};"
+        "mode": "runOnceForEachItem",
+        "jsCode": "// To Get the new workflow JSON from Docker\nconst newContent = $('Clean Name Formats & Prepare Files').item.json.file_content;\n\n// To Get the existing file content from GitHub (decoded from base64)\nconst existingBase64 = $('Check If the File exists in the Repository').item.binary?.data?.data;\nconst existingContent = existingBase64 ? Buffer.from(existingBase64, 'base64').toString('utf-8') : '';\n\n// Comparing the 2 workflows\nconst hasChanged = newContent.trim() !== existingContent.trim();\n\nreturn {\n  json: {\n    has_changed: hasChanged,\n    workflow_name: $('Clean Name Formats & Prepare Files').item.json.clean_name,\n    file_path: $('Clean Name Formats & Prepare Files').item.json.file_path,\n    file_content: newContent\n  }\n};"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2032,
+        1952,
         -192
       ],
       "id": "43231afe-44c7-4314-a68f-7e8ce6998499",
       "name": "Has Workflow Changed?"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "732a237b-2eee-44cd-8b1c-c3cda7fb71e5",
+              "leftValue": "={{ $json.has_changed }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        2176,
+        -192
+      ],
+      "id": "ba68ea0f-81b7-42fa-8ac9-c6754ad415d5",
+      "name": "Is Workflow Updated?"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are an automated Git commit message generator for an n8n automation repository.\n\nWorkflow Name: {{ $('Has Workflow Changed?').item.json.workflow_name }}\n\nHere is the workflow JSON structure:\n{{ $('Has Workflow Changed?').item.json.file_content }}\n\nTask:\nAnalyze the workflow nodes and write a single, professional conventional Git commit message summarizing the workflow's purpose and functionality (e.g., \"feat(Scenario 8): add Notion task creation and Slack alerts\" or \"refactor(PROD 01): improve git diff check and branching\").\n\nRules:\n- Output ONLY the commit message.\n- Do NOT include markdown quotes, backticks, or conversational filler.\n- Maximum 72 characters.",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        2336,
+        -416
+      ],
+      "id": "6a11d098-1135-4964-89d8-0aef4f07d8cd",
+      "name": "Generate AI commit messages"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        2432,
+        -240
+      ],
+      "id": "4c7ca45a-65a5-4a26-b180-6252d3a87c4a",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "znAJNT0C4uIRmQs2",
+          "name": "Test 01"
+        }
+      }
     }
   ],
   "connections": {
@@ -570,8 +641,41 @@
       "main": [
         [
           {
+            "node": "Is Workflow Updated?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Workflow Updated?": {
+      "main": [
+        [
+          {
+            "node": "Generate AI commit messages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate AI commit messages": {
+      "main": [
+        [
+          {
             "node": "GitHub - Update Existing Files",
             "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Generate AI commit messages",
+            "type": "ai_languageModel",
             "index": 0
           }
         ]
